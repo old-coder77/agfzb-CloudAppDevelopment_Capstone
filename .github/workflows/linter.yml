@@ -5,6 +5,8 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+on:
+workflow_dispatch:
 
 jobs: # list of things to do
   lint_function_js:
