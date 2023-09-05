@@ -1,7 +1,5 @@
 name: 'Lint Code'
 
-on: 
-workflow_dispatch:
 on:
   push:
     branches: [master, main]
