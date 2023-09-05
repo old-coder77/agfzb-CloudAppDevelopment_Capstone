@@ -15,9 +15,10 @@
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
-            <b><a class="navbar-brand" href="#">About Us</a></b>
-            <a class="navbar-brand" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+            <h3>Car Dealership</h3>
+            <a class="navbar-link" href="{% url 'djangoapp:index' %}">Home</a>
+            <a class="navbar-link active" href="#">About Us</a>
+            <a class="navbar-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
         </div>
     </div>
 </nav>
