@@ -1,0 +1,87 @@
+/**
+ * Get all dealerships
+ */
+
+const { CloudantV1 } = require('@ibm-cloud/cloudant');
+const { IamAuthenticator } = require('ibm-cloud-sdk-core');
+
+function main(params) {
+
+    const authenticator = new IamAuthenticator({ apikey: params.IAM_API_KEY })
+    const cloudant = CloudantV1.newInstance({
+      authenticator: authenticator
+    });
+    cloudant.setServiceUrl(params.COUCH_URL);
+    const selector = {};
+    selector.state = params.state;
+    if (params.state) {
+        selector.state = params.state;
+    }
+        let dealershipPromise = getMatchingRecords(cloudant,"dealerships",selector);
+        return dealershipPromise
+        
+    
+        
+}
+
+function isEmpty(obj) {
+    return JSON.stringify(obj) == '{}'
+}
+function getDbs(cloudant) {
+     return new Promise((resolve, reject) => {
+         cloudant.getAllDbs()
+             .then(body => {
+                 resolve({ dbs: body.result });
+             })
+             .catch(err => {
+                  console.log(err);
+                 reject({ err: err });
+             });
+     });
+ }
+ 
+ 
+ /*
+ Sample implementation to get the records in a db based on a selector. If selector is empty, it returns all records. 
+ eg: selector = {state:"Texas"} - Will return all records which has value 'Texas' in the column 'State'
+ */
+ function getMatchingRecords(cloudant,dbname, selector) {
+     return  new Promise((resolve, reject) => {
+         cloudant.postFind({db:dbname,selector:selector})
+                 .then((result)=>{
+                     if (Object.keys(result.result.docs).length === 0 && Object.keys(selector).length > 0) {
+                         reject({ "status": 404, message:"The state does not exist"});
+                     } else if (Object.keys(result.result.docs).length === 0) {
+                          reject({ "status": 404, message:"The database is empty"});
+                     } else {
+                        resolve({statusCode: 200,
+                    headers: { 'Content-Type': 'application/json' },body:{result: result.result.docs}});
+    
+                     }
+                 })
+                 .catch(err => {
+                    console.log(err);
+                     reject({ "status": 500, message:"Something went wrong on the server",err: err });
+                 });
+          })
+     
+ }
+ 
+                        
+ /*
+ Sample implementation to get all the records in a db.
+ */
+ function getAllRecords(cloudant,dbname) {
+     return new Promise((resolve, reject) => {
+         cloudant.postAllDocs({ db: dbname, includeDocs: true, limit: 10 })            
+             .then((result)=>{
+               resolve({result:result.result.rows});
+             })
+             .catch(err => {
+                console.log(err);
+                reject({ err: err });
+             });
+         })
+ }
+
+
