@@ -59,8 +59,11 @@ def post_request(url, json_payload,**kwargs):
 def get_dealers_from_cf(url, **kwargs):
     results = []
     state = kwargs.get("state")
+    id = kwargs.get("id")
     if state:
         json_result = get_request(url, state=state)
+    if id:
+        json_result = get_request(url, id=id)
     else:
         json_result = get_request(url)
 
@@ -90,7 +93,7 @@ def get_dealer_by_id_from_cf(url, dealerId):
 
     results = []
     dealer_id = dealerId
-    json_result = get_request(url, dealership_id=dealer_id)
+    json_result = get_request(url, dealer_id=dealerId)
     if json_result:
         # Get the row list in JSON as reviews
         print(json_result)
