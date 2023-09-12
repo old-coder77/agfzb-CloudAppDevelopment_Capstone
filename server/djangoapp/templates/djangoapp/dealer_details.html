@@ -24,7 +24,7 @@
                 <li> 
                     <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
                     <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
-                    <a class="btn btn-link" href="">Add Review</a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:add_review' dealership.id %}">Add Review</a>
                 </li>
                 {% else %}
                 <li>
@@ -42,6 +42,11 @@
             </ul>
         </div>
     </nav>
+    <div class="container">
+        {% if dealership %}
+            <h3>Reviews for &nbsp; {{dealership.full_name}}</h3>
+        {% endif %}
+    </div>
     <div class="card-columns">
         {% for review in reviews %}
         <div class="card">
