@@ -143,18 +143,24 @@ def add_review(request, dealer_id):
         review = {}
         car = CarModel.objects.filter(id = int(request.POST['car'])).get()
         dealership = get_dealer_by_id_from_cf(url2,car.dealer_id)[0]
+        review["another"] =  "field"
         review["id"] = datetime.utcnow().isoformat()
-        review["name"] =   dealership.full_name
-        review["dealership"] = car.dealer_id
-        review["review"] = request.POST['content']
-        review["purchase"] = request.POST['purchased']
-        review["purchase_date"] = request.POST['purchasedate']
-        review["car_make"] =  car.make
+        review["car_make"] =  car.make.name
         review["car_model"] =  car.name
         review["car_year"] = car.year.strftime("%Y") 
+        review["name"] =   dealership.short_name
+        review["dealership"] = int(car.dealer_id)
+        purchased = "false"
+        if request.POST['purchased'] == "selected":
+            purchased = "true"
+        review["purchase"] = purchased
+        review["purchase_date"] = request.POST['purchasedate']
+        review["review"] = request.POST['content']
+        print(review)
         json_payload = {}
         json_payload["review"] = review
-        result = post_request(url, json_payload, dealerId=car.dealer_id)
+        print(json_payload)
+        result = post_request(url, json_payload,dealerId=car.dealer_id)
         print(result)
-        redirect("djangoapp:dealer_details", dealer_id=car.dealer_id)
+        return redirect("djangoapp:dealer_details", dealer_id=car.dealer_id)
 
